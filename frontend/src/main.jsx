@@ -14,6 +14,7 @@ function App() {
   return (
     <main style={{ fontFamily: "Arial, sans-serif", maxWidth: 800, margin: "80px auto", padding: 24 }}>
       <h1>MERN DevOps Learning Projects man 🚀</h1>
+      <p>Testing protected main branch 🔐</p>
       <p>This React frontend will eventually be containerized, tested, deployed and monitored.</p>
       <div style={{ padding: 20, border: "1px solid #ddd", borderRadius: 12, marginTop: 24 }}>
         <strong>Backend response:</strong>
