@@ -1,29 +1,23 @@
-import express from "express";
-import cors from "cors";
+import dotenv from "dotenv";
+import app from "./app.js";
+import { connectDatabase } from "./config/database.js";
 
-const app = express();
+dotenv.config();
+
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/api/health", (req, res) => {
-  res.json({
-    status: "ok",
-    service: "backend",
-    message: "MERN DevOps backend is running"
-  });
-});
-
-app.get("/api/message", (req, res) => {
-  res.json({
-    message: "Hello from the Express backend 🚀"
-  });
-});
-
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
-    console.log(`Backend running on http://localhost:${PORT}`);
+  const startServer = async () => {
+    await connectDatabase();
+
+    app.listen(PORT, () => {
+      console.log(`Backend running on http://localhost:${PORT}`);
+    });
+  };
+
+  startServer().catch((error) => {
+    console.error("Failed to start backend:", error.message);
+    process.exitCode = 1;
   });
 }
 
