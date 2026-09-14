@@ -57,6 +57,7 @@ jobs:
         with:
           context: ./backend
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: jtbiswass/mern-devops-backend:latest
 
       - name: Build and push frontend image
@@ -64,4 +65,5 @@ jobs:
         with:
           context: ./frontend
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: jtbiswass/mern-devops-frontend:latest
