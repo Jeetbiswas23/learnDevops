@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -10,7 +10,12 @@ on:
       - main
 
 jobs:
-  build:
+
+  # =========================
+  # CI
+  # =========================
+  ci:
+    name: CI - Test & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -22,6 +27,7 @@ jobs:
         with:
           node-version: 22
 
+      # Backend
       - name: Install backend dependencies
         working-directory: backend
         run: npm install
@@ -34,6 +40,7 @@ jobs:
         working-directory: backend
         run: npm test
 
+      # Frontend
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm install
@@ -42,7 +49,20 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      # Docker
+
+  # =========================
+  # Docker
+  # =========================
+  docker:
+    name: Docker - Build & Push
+    runs-on: ubuntu-latest
+
+    needs: ci
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -67,3 +87,25 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: jtbiswass/mern-devops-frontend:latest
+
+
+  # =========================
+  # CD
+  # =========================
+  cd:
+    name: CD - Validate Kubernetes
+    runs-on: ubuntu-latest
+
+    needs: docker
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: latest
+
+      - name: Validate Kubernetes manifests
+        run: kubectl apply --dry-run=client -f k8s/
