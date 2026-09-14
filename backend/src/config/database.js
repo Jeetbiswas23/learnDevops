@@ -9,10 +9,12 @@ const mongoClient = process.env.MONGODB_URI
 const databaseName = process.env.MONGODB_DATABASE || "task-api";
 
 export const connectDatabase = async () => {
-  if (mongoClient) {
-    await mongoClient.connect();
-    console.log("Connected to MongoDB");
+  if (!mongoClient) {
+    throw new Error("MONGODB_URI is not configured");
   }
+
+  await mongoClient.connect();
+  console.log("Connected to MongoDB");
 };
 
 export const getTasksCollection = () =>

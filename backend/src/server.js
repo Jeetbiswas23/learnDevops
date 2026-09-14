@@ -20,5 +20,6 @@ if (process.env.NODE_ENV !== "test") {
     process.exitCode = 1;
   });
 }
+console.log("Backend server module loaded");
 
 export default app;
